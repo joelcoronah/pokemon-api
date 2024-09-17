@@ -16,7 +16,7 @@ https://pokemon-api-l2t7.onrender.com/api
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/your-username/pokemon-api.git
+   git clone https://github.com/joelcoronah/pokemon-api.git
    cd pokemon-api
    ```
 
@@ -30,7 +30,16 @@ https://pokemon-api-l2t7.onrender.com/api
 
    ```bash
    POKEAPI_URL=https://pokeapi.co/api/v2
+   PORT=3000
    ```
+
+## If you are using docker:
+
+```bash
+docker compose up
+```
+
+and the API will run on http://localhost:3000.
 
 ## How to Run the API
 
