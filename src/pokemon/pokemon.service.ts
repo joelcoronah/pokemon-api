@@ -1,6 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  GetAllPokemonsResponse,
+  PokemonAndType,
+  PokemonWithType,
+} from './interfaces';
 
 @Injectable()
 export class PokemonService {
@@ -15,11 +20,11 @@ export class PokemonService {
 
   /**
    * Gets a list of Pokemon names and URLs.
-   * @param limit the maximum number of Pokemon to return
-   * @param offset the number of Pokemon to skip before returning Pokemon
-   * @returns a list of Pokemon with their names and URLs
+   * @param {number} [limit=100] The maximum number of Pokemon to retrieve.
+   * @param {number} [offset=0] The starting index of the Pokemon to retrieve.
+   * @returns {Promise<GetAllPokemonsResponse>} A promise that resolves to an array of objects with the Pokemon name and URL.
    */
-  async getPokemons(limit = 100, offset = 0) {
+  async getPokemons(limit = 100, offset = 0): Promise<GetAllPokemonsResponse> {
     const url = `${this.pokeApiUrl}/pokemon?limit=${limit}&offset=${offset}`;
     const response = await this.httpService.axiosRef.get(url);
     return response.data.results.map((pokemon) => ({
@@ -29,11 +34,11 @@ export class PokemonService {
   }
 
   /**
-   * Gets a Pokemon by its id.
+   * Gets a specific Pokemon with its types.
    * @param id the Pokemon id
    * @returns a Pokemon with its name and types
    */
-  async getPokemonById(id: number) {
+  async getPokemonById(id: number): Promise<PokemonWithType> {
     const url = `${this.pokeApiUrl}/pokemon/${id}`;
     const response = await this.httpService.axiosRef.get(url);
 
@@ -50,14 +55,13 @@ export class PokemonService {
   }
 
   /**
-   * Gets a Pokemon with its name and types, including their names translated to Spanish and Japanese.
+   * Gets a specific Pokemon with its types, including their translations in Spanish and Japanese.
    * @param id the Pokemon id
-   * @returns a Pokemon with its name and types with their names translated to Spanish and Japanese
+   * @returns a Pokemon with its name and types, each with their translations
    */
-  async getPokemonAndTypes(id: number) {
+  async getPokemonAndTypes(id: number): Promise<PokemonAndType> {
     const pokemon = await this.getPokemonById(id);
 
-    // Obtener los nombres traducidos de los tipos
     const typesWithTranslations = await Promise.all(
       pokemon.types.map(async (type) => {
         const typeResponse = await this.httpService.axiosRef.get(type.type.url);
